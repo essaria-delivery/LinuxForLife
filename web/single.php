@@ -1,0 +1,397 @@
+<?php include "inc/connection.php"; 
+$queryy="SELECT * FROM `web` WHERE `id`=1";
+$resulty=mysqli_query($conn,$queryy);
+$rowy=mysqli_fetch_array($resulty, MYSQLI_ASSOC);
+$title=$rowy['title'];
+$favicon=$rowy['favicon']; //../uploads/web/
+?>
+
+	<?php
+	//include("cart/includes/db.php");
+	include("cart/includes/functions.php");
+	
+	if($_REQUEST['command']=='add' && $_REQUEST['productid']>0){
+		$pid=$_GET['productid'];
+		addtocart($pid,1);
+		//header("location:cart.php");
+		exit();
+	}
+	
+	if(isset($_POST['addd'])){
+		$pid=$_POST['productid'];
+		addtocart($pid,1);
+		header("location:cart.php");
+		//exit();
+	}
+	
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+   
+<head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="description" content="Askbootstrap">
+      <meta name="author" content="Askbootstrap">
+      <title><?= $title ?></title>
+      <!-- Favicon Icon -->
+      <link rel="icon" type="image/png" href="../uploads/web/<?= $favicon ?>">
+      <!-- Bootstrap core CSS -->
+      <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+      <!-- Material Design Icons -->
+      <link href="vendor/icons/css/materialdesignicons.min.css" media="all" rel="stylesheet" type="text/css" />
+      <!-- Select2 CSS -->
+      <link href="vendor/select2/css/select2-bootstrap.css" />
+      <link href="vendor/select2/css/select2.min.css" rel="stylesheet" />
+      <!-- Custom styles for this template -->
+      <link href="css/osahan.min.css" rel="stylesheet">
+      <!-- Owl Carousel -->
+      <link rel="stylesheet" href="vendor/owl-carousel/owl.carousel.css">
+      <link rel="stylesheet" href="vendor/owl-carousel/owl.theme.css">
+      
+      <script language="javascript">
+        	function addtocart(pid){
+        		document.form1.productid.value=pid;
+        		document.form1.command.value='add';
+        		document.form1.submit();
+        	}
+        </script>
+   </head>
+   <body>
+    <?php include "inc/header.php" ?> 
+    <form name="form1" method="get">
+    	<input type="hidden" name="productid" />
+        <input type="hidden" name="command" />
+    </form>
+      <section class="pt-3 pb-3 page-info section-padding border-bottom bg-white">
+         <div class="container">
+            <div class="row">
+               <div class="col-md-12">
+                  <a href="#"><strong><span class="mdi mdi-home"></span> Home</strong></a> <span class="mdi mdi-chevron-right"></span> <a href="#">Fruits & Vegetables</a> <span class="mdi mdi-chevron-right"></span> <a href="#">Fruits</a>
+               </div>
+            </div>
+         </div>
+      </section>
+      
+      <?php 
+      $pid =$_GET['pid'];
+      $query2="Select dp.*,products.*, ( ifnull (producation.p_qty,0) - ifnull(consuption.c_qty,0)) as stock ,categories.title from products 
+                                inner join categories on categories.id = products.category_id
+                                left outer join(select SUM(qty) as c_qty,product_id from sale_items group by product_id) as consuption on consuption.product_id = products.product_id 
+                                left outer join(select SUM(qty) as p_qty,product_id from purchase group by product_id) as producation on producation.product_id = products.product_id
+                               left join deal_product dp on dp.product_id=products.product_id where products.product_id='".$pid."'";
+                            $result2=mysqli_query($conn,$query2);
+                        
+                            $row=mysqli_fetch_array($result2, MYSQLI_ASSOC);
+      
+      
+      ?>
+      
+      <section class="shop-single section-padding pt-3">
+         <div class="container">
+            <div class="row">
+               <div class="col-md-6">
+                  <div class="shop-detail-left">
+                     <div class="shop-detail-slider">
+                        <!--div class="favourite-icon">
+                           <a class="fav-btn" title="" data-placement="bottom" data-toggle="tooltip" href="#" data-original-title="59% OFF"><i class="mdi mdi-tag-outline"></i></a>
+                        </div-->
+                        <div id="sync1" class="owl-carousel">
+                           <div class="item"><img alt="" src="../uploads/products/<?= $row['product_image'] ?>" class="img-fluid img-center"></div>
+                           <!--div class="item"><img alt="" src="img/item/2.jpg" class="img-fluid img-center"></div>
+                           <div class="item"><img alt="" src="img/item/3.jpg" class="img-fluid img-center"></div>
+                           <div class="item"><img alt="" src="img/item/4.jpg" class="img-fluid img-center"></div>
+                           <div class="item"><img alt="" src="img/item/5.jpg" class="img-fluid img-center"></div>
+                           <div class="item"><img alt="" src="img/item/6.jpg" class="img-fluid img-center"></div-->
+                        </div>
+                        <!--div id="sync2" class="owl-carousel">
+                           <div class="item"><img alt="" src="img/item/1.jpg" class="img-fluid img-center"></div>
+                           <div class="item"><img alt="" src="img/item/2.jpg" class="img-fluid img-center"></div>
+                           <div class="item"><img alt="" src="img/item/3.jpg" class="img-fluid img-center"></div>
+                           <div class="item"><img alt="" src="img/item/4.jpg" class="img-fluid img-center"></div>
+                           <div class="item"><img alt="" src="img/item/5.jpg" class="img-fluid img-center"></div>
+                           <div class="item"><img alt="" src="img/item/6.jpg" class="img-fluid img-center"></div>
+                        </div-->
+                     </div>
+                  </div>
+               </div>
+               <div class="col-md-6">
+                  <div class="shop-detail-right">
+                     <span class="badge badge-success">50% OFF</span>
+                     <h2><?= $row['product_name'] ?></h2>
+                     <h6><strong><span class="mdi mdi-approval"></span> Available in</strong> - <?= $row['unit_value'].''.$row['unit'] ?></h6>
+                     <p class="regular-price"><i class="mdi mdi-tag-outline"></i> MRP : <?= $row['price'] ?></p>
+                     <p class="offer-price mb-0">Discounted price : <span class="text-success"> <?php if(!empty($row['deal_price'])) { echo $row['deal_price']; } else { echo $row['price']; } ?></span></p>
+                     
+                     <!--form action="" method="post">
+                                      <input type="hidden" name="productid" value="<?= $product_id ?>" />
+                                      <button type="submit" name="addd" class="btn btn-secondary btn-lg"><i class="mdi mdi-cart-outline"></i> Add To Cart</button> 
+                                  </form-->
+                     <div class="short-description" style="margin-top: 20px;">
+                        <h5>
+                           Quick Overview  
+                           <p class="float-right">Availability: <span class="badge badge-success">In Stock</span></p>
+                        </h5>
+                        <p>
+                            <?= $row['product_description'] ?>
+                        </p>
+                        <p class="mb-0"></p>
+                     </div>
+                     <h6 class="mb-3 mt-4">Why shop from Osahan Grocery?</h6>
+                     <div class="row">
+                        <div class="col-md-6">
+                           <div class="feature-box">
+                              <i class="mdi mdi-truck-fast"></i>
+                              <h6 class="text-info">Free Delivery</h6>
+                              <p>Lorem ipsum dolor...</p>
+                           </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="feature-box">
+                              <i class="mdi mdi-basket"></i>
+                              <h6 class="text-info">100% Guarantee</h6>
+                              <p>Rorem Ipsum Dolor sit...</p>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+      <section class="product-items-slider section-padding bg-white border-top">
+         <div class="container">
+            <div class="section-header">
+               <h5 class="heading-design-h5">Best Offers View <span class="badge badge-primary">20% OFF</span>
+                  <a class="float-right text-secondary" href="shop.php">View All</a>
+               </h5>
+            </div>
+            <div class="owl-carousel owl-carousel-featured">
+               <div class="item">
+                  <div class="product">
+                     <a href="shop.php">
+                        <div class="product-header">
+                           <span class="badge badge-success">50% OFF</span>
+                           <img class="img-fluid" src="img/item/7.jpg" alt="">
+                           <span class="veg text-success mdi mdi-circle"></span>
+                        </div>
+                        <div class="product-body">
+                           <h5>Product Title Here</h5>
+                           <h6><strong><span class="mdi mdi-approval"></span> Available in</strong> - 500 gm</h6>
+                        </div>
+                        <div class="product-footer">
+                           <button type="button" class="btn btn-secondary btn-sm float-right"><i class="mdi mdi-cart-outline"></i> Add To Cart</button>
+                           <p class="offer-price mb-0">$450.99 <i class="mdi mdi-tag-outline"></i><br><span class="regular-price">$800.99</span></p>
+                        </div>
+                     </a>
+                  </div>
+               </div>
+               <div class="item">
+                  <div class="product">
+                     <a href="shop.php">
+                        <div class="product-header">
+                           <span class="badge badge-success">50% OFF</span>
+                           <img class="img-fluid" src="img/item/8.jpg" alt="">
+                           <span class="non-veg text-danger mdi mdi-circle"></span>
+                        </div>
+                        <div class="product-body">
+                           <h5>Product Title Here</h5>
+                           <h6><strong><span class="mdi mdi-approval"></span> Available in</strong> - 500 gm</h6>
+                        </div>
+                        <div class="product-footer">
+                           <button type="button" class="btn btn-secondary btn-sm float-right"><i class="mdi mdi-cart-outline"></i> Add To Cart</button>
+                           <p class="offer-price mb-0">$450.99 <i class="mdi mdi-tag-outline"></i><br><span class="regular-price">$800.99</span></p>
+                        </div>
+                     </a>
+                  </div>
+               </div>
+               <div class="item">
+                  <div class="product">
+                     <a href="shop.php">
+                        <div class="product-header">
+                           <span class="badge badge-success">50% OFF</span>
+                           <img class="img-fluid" src="img/item/9.jpg" alt="">
+                           <span class="non-veg text-danger mdi mdi-circle"></span>
+                        </div>
+                        <div class="product-body">
+                           <h5>Product Title Here</h5>
+                           <h6><strong><span class="mdi mdi-approval"></span> Available in</strong> - 500 gm</h6>
+                        </div>
+                        <div class="product-footer">
+                           <button type="button" class="btn btn-secondary btn-sm float-right"><i class="mdi mdi-cart-outline"></i> Add To Cart</button>
+                           <p class="offer-price mb-0">$450.99 <i class="mdi mdi-tag-outline"></i><br><span class="regular-price">$800.99</span></p>
+                        </div>
+                     </a>
+                  </div>
+               </div>
+               <div class="item">
+                  <div class="product">
+                     <a href="shop.php">
+                        <div class="product-header">
+                           <span class="badge badge-success">50% OFF</span>
+                           <img class="img-fluid" src="img/item/10.jpg" alt="">
+                           <span class="veg text-success mdi mdi-circle"></span>
+                        </div>
+                        <div class="product-body">
+                           <h5>Product Title Here</h5>
+                           <h6><strong><span class="mdi mdi-approval"></span> Available in</strong> - 500 gm</h6>
+                        </div>
+                        <div class="product-footer">
+                           <button type="button" class="btn btn-secondary btn-sm float-right"><i class="mdi mdi-cart-outline"></i> Add To Cart</button>
+                           <p class="offer-price mb-0">$450.99 <i class="mdi mdi-tag-outline"></i><br><span class="regular-price">$800.99</span></p>
+                        </div>
+                     </a>
+                  </div>
+               </div>
+               <div class="item">
+                  <div class="product">
+                     <a href="shop.php">
+                        <div class="product-header">
+                           <span class="badge badge-success">50% OFF</span>
+                           <img class="img-fluid" src="img/item/11.jpg" alt="">
+                           <span class="veg text-success mdi mdi-circle"></span>
+                        </div>
+                        <div class="product-body">
+                           <h5>Product Title Here</h5>
+                           <h6><strong><span class="mdi mdi-approval"></span> Available in</strong> - 500 gm</h6>
+                        </div>
+                        <div class="product-footer">
+                           <button type="button" class="btn btn-secondary btn-sm float-right"><i class="mdi mdi-cart-outline"></i> Add To Cart</button>
+                           <p class="offer-price mb-0">$450.99 <i class="mdi mdi-tag-outline"></i><br><span class="regular-price">$800.99</span></p>
+                        </div>
+                     </a>
+                  </div>
+               </div>
+               <div class="item">
+                  <div class="product">
+                     <a href="shop.php">
+                        <div class="product-header">
+                           <span class="badge badge-success">50% OFF</span>
+                           <img class="img-fluid" src="img/item/12.jpg" alt="">
+                           <span class="veg text-success mdi mdi-circle"></span>
+                        </div>
+                        <div class="product-body">
+                           <h5>Product Title Here</h5>
+                           <h6><strong><span class="mdi mdi-approval"></span> Available in</strong> - 500 gm</h6>
+                        </div>
+                        <div class="product-footer">
+                           <button type="button" class="btn btn-secondary btn-sm float-right"><i class="mdi mdi-cart-outline"></i> Add To Cart</button>
+                           <p class="offer-price mb-0">$450.99 <i class="mdi mdi-tag-outline"></i><br><span class="regular-price">$800.99</span></p>
+                        </div>
+                     </a>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+      <section class="section-padding bg-white border-top">
+         <div class="container">
+            <div class="row">
+               <div class="col-lg-4 col-sm-6">
+                  <div class="feature-box">
+                     <i class="mdi mdi-truck-fast"></i>
+                     <h6>Free & Next Day Delivery</h6>
+                     <p>Lorem ipsum dolor sit amet, cons...</p>
+                  </div>
+               </div>
+               <div class="col-lg-4 col-sm-6">
+                  <div class="feature-box">
+                     <i class="mdi mdi-basket"></i>
+                     <h6>100% Satisfaction Guarantee</h6>
+                     <p>Rorem Ipsum Dolor sit amet, cons...</p>
+                  </div>
+               </div>
+               <div class="col-lg-4 col-sm-6">
+                  <div class="feature-box">
+                     <i class="mdi mdi-tag-heart"></i>
+                     <h6>Great Daily Deals Discount</h6>
+                     <p>Sorem Ipsum Dolor sit amet, Cons...</p>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+      <!-- Footer -->
+     <?php include "inc/footer.php"; ?>
+     
+      <!-- End Copyright -->
+      <div class="cart-sidebar">
+         <div class="cart-sidebar-header">
+            <h5>
+               My Cart <span class="text-success">(5 item)</span> <a data-toggle="offcanvas" class="float-right" href="#"><i class="mdi mdi-close"></i>
+               </a>
+            </h5>
+         </div>
+         <div class="cart-sidebar-body">
+            <div class="cart-list-product">
+               <a class="float-right remove-cart" href="#"><i class="mdi mdi-close"></i></a>
+               <img class="img-fluid" src="img/item/11.jpg" alt="">
+               <span class="badge badge-success">50% OFF</span>
+               <h5><a href="#">Product Title Here</a></h5>
+               <h6><strong><span class="mdi mdi-approval"></span> Available in</strong> - 500 gm</h6>
+               <p class="offer-price mb-0">$450.99 <i class="mdi mdi-tag-outline"></i> <span class="regular-price">$800.99</span></p>
+            </div>
+            <div class="cart-list-product">
+               <a class="float-right remove-cart" href="#"><i class="mdi mdi-close"></i></a>
+               <img class="img-fluid" src="img/item/7.jpg" alt="">
+               <span class="badge badge-success">50% OFF</span>
+               <h5><a href="#">Product Title Here</a></h5>
+               <h6><strong><span class="mdi mdi-approval"></span> Available in</strong> - 500 gm</h6>
+               <p class="offer-price mb-0">$450.99 <i class="mdi mdi-tag-outline"></i> <span class="regular-price">$800.99</span></p>
+            </div>
+            <div class="cart-list-product">
+               <a class="float-right remove-cart" href="#"><i class="mdi mdi-close"></i></a>
+               <img class="img-fluid" src="img/item/9.jpg" alt="">
+               <span class="badge badge-success">50% OFF</span>
+               <h5><a href="#">Product Title Here</a></h5>
+               <h6><strong><span class="mdi mdi-approval"></span> Available in</strong> - 500 gm</h6>
+               <p class="offer-price mb-0">$450.99 <i class="mdi mdi-tag-outline"></i> <span class="regular-price">$800.99</span></p>
+            </div>
+            <div class="cart-list-product">
+               <a class="float-right remove-cart" href="#"><i class="mdi mdi-close"></i></a>
+               <img class="img-fluid" src="img/item/1.jpg" alt="">
+               <span class="badge badge-success">50% OFF</span>
+               <h5><a href="#">Product Title Here</a></h5>
+               <h6><strong><span class="mdi mdi-approval"></span> Available in</strong> - 500 gm</h6>
+               <p class="offer-price mb-0">$450.99 <i class="mdi mdi-tag-outline"></i> <span class="regular-price">$800.99</span></p>
+            </div>
+            <div class="cart-list-product">
+               <a class="float-right remove-cart" href="#"><i class="mdi mdi-close"></i></a>
+               <img class="img-fluid" src="img/item/2.jpg" alt="">
+               <span class="badge badge-success">50% OFF</span>
+               <h5><a href="#">Product Title Here</a></h5>
+               <h6><strong><span class="mdi mdi-approval"></span> Available in</strong> - 500 gm</h6>
+               <p class="offer-price mb-0">$450.99 <i class="mdi mdi-tag-outline"></i> <span class="regular-price">$800.99</span></p>
+            </div>
+         </div>
+         <div class="cart-sidebar-footer">
+            <div class="cart-store-details">
+               <p>Sub Total <strong class="float-right">$900.69</strong></p>
+               <p>Delivery Charges <strong class="float-right text-danger">+ $29.69</strong></p>
+               <h6>Your total savings <strong class="float-right text-danger">$55 (42.31%)</strong></h6>
+            </div>
+            <a href="checkout.php"><button class="btn btn-secondary btn-lg btn-block text-left" type="button"><span class="float-left"><i class="mdi mdi-cart-outline"></i> Proceed to Checkout </span><span class="float-right"><strong>$1200.69</strong> <span class="mdi mdi-chevron-right"></span></span></button></a>
+         </div>
+      </div>
+      <!-- Bootstrap core JavaScript -->
+      <script src="vendor/jquery/jquery.min.js"></script>
+      <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <!-- select2 Js -->
+      <script src="vendor/select2/js/select2.min.js"></script>
+      <!-- Owl Carousel -->
+      <script src="vendor/owl-carousel/owl.carousel.js"></script>
+      <!-- Custom -->
+      <script src="js/custom.min.js"></script>
+	  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-120909275-1"></script>
+	  <script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'UA-120909275-1');
+	  </script>
+   </body>
+
+</html>
+

@@ -1,0 +1,8 @@
+[06-Feb-2019 05:42:03 UTC] PHP Warning:  Use of undefined constant _DIR_ - assumed '_DIR_' (this will throw an Error in a future version of PHP) in /home/u602795421/domains/gogrocer.pe.hu/public_html/includes/lb_helper.php on line 28
+[06-Feb-2019 05:42:13 UTC] PHP Warning:  Use of undefined constant _DIR_ - assumed '_DIR_' (this will throw an Error in a future version of PHP) in /home/u602795421/domains/gogrocer.pe.hu/public_html/includes/lb_helper.php on line 28
+[06-Feb-2019 05:42:13 UTC] PHP Parse error:  syntax error, unexpected '<', expecting end of file in /home/u602795421/domains/gogrocer.pe.hu/public_html/lic.php on line 4
+[06-Feb-2019 06:03:26 UTC] PHP Warning:  Use of undefined constant _DIR_ - assumed '_DIR_' (this will throw an Error in a future version of PHP) in /home/u602795421/domains/gogrocer.pe.hu/public_html/includes/lb_helper.php on line 28
+[06-Feb-2019 06:03:29 UTC] PHP Warning:  Use of undefined constant _DIR_ - assumed '_DIR_' (this will throw an Error in a future version of PHP) in /home/u602795421/domains/gogrocer.pe.hu/public_html/includes/lb_helper.php on line 28
+[06-Feb-2019 06:03:29 UTC] PHP Warning:  unlink(../lic.php): No such file or directory in /home/u602795421/domains/gogrocer.pe.hu/public_html/deactivate/index.php on line 4
+[06-Feb-2019 06:03:34 UTC] PHP Warning:  Use of undefined constant _DIR_ - assumed '_DIR_' (this will throw an Error in a future version of PHP) in /home/u602795421/domains/gogrocer.pe.hu/public_html/includes/lb_helper.php on line 28
+[06-Feb-2019 06:03:34 UTC] PHP Warning:  unlink(../lic.php): No such file or directory in /home/u602795421/domains/gogrocer.pe.hu/public_html/deactivate/index.php on line 4
